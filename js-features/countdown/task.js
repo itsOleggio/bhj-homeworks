@@ -5,23 +5,7 @@ function formatTime(time) {
     let seconds = time - (minutes * 60);
     let hours = Math.floor(minutes / 60);
 
-    if (hours > 0) {
-        minutes = minutes - (hours * 60);
-    }
-
-    if (seconds < 10) {
-        seconds = '0' + seconds;
-    }
-
-    if (minutes < 10) {
-        minutes = '0' + minutes;
-    }
-
-    if (hours < 10) {
-        hours = '0' + hours;
-    }
-
-    return hours + ':' + minutes + ':' + seconds;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
 function StartTimer(time){

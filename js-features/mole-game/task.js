@@ -14,15 +14,16 @@ hole.forEach(hole =>{
             lostCounter.textContent = (Number(lostCounter.textContent) + 1).toString();
         }
         if (Number(lostCounter.textContent) === 10){
-            alert('Вы проиграли!');
-            deadCounter.textContent = '0';
-            lostCounter.textContent = '0';
+            reload('Вы проиграли!');
         }
         if(Number(deadCounter.textContent) === 5){
-            alert('Вы выиграли!');
-            deadCounter.textContent = '0';
-            lostCounter.textContent = '0';
+            reload('Вы выиграли!');
         }
     })
-
 })
+
+function reload(text){
+    alert(text);
+    deadCounter.textContent = '0';
+    lostCounter.textContent = '0';
+}

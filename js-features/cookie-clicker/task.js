@@ -1,3 +1,4 @@
+/* var 1
 let cookie = document.getElementById("cookie");
 let counter = document.getElementById("clicker__counter");
 let counterSpeed = document.getElementById("clicker__timer");
@@ -28,4 +29,21 @@ cookie.onclick = function () {
     }, 100)
 
 }
+*/
 
+
+// var. 2
+
+
+const cookie = document.getElementById("cookie");
+const counter = document.getElementById("clicker__counter");
+const counterSpeed = document.getElementById("clicker__timer");
+
+let prevTimestamp = Date.now();
+
+cookie.onclick = () => {
+    cookie.width = ++counter.textContent % 2 ? 400 : 200;
+    const elapsedTime = (Date.now() - prevTimestamp) / 1000; // сколько прошло секунд
+    counterSpeed.textContent = (1 / elapsedTime).toFixed(2);
+    prevTimestamp = Date.now();
+}

@@ -4,6 +4,8 @@ class Game {
     this.wordElement = container.querySelector('.word');
     this.winsElement = container.querySelector('.status__wins');
     this.lossElement = container.querySelector('.status__loss');
+    this.timerElementSeconds = container.querySelector('.timer__seconds')
+    this.timerElementMicroSecond = container.querySelector('.microseconds__seconds')
 
     this.reset();
 
@@ -16,6 +18,46 @@ class Game {
     this.lossElement.textContent = 0;
   }
 
+  timer(countCharter) {
+    if (this.intervalId) clearInterval(this.intervalId);
+    if (this.microIntervalId) clearInterval(this.microIntervalId);
+
+    let seconds = countCharter.length;
+    let micro = 99;
+
+    this.timerElementSeconds.textContent = seconds;
+    this.timerElementMicroSecond.textContent =
+        micro.toString().padStart(2, '0');
+
+    this.microIntervalId = setInterval(() => {
+
+      micro--;
+
+      if (micro < 0) {
+        micro = 99;
+      }
+
+      this.timerElementMicroSecond.textContent =
+          micro.toString().padStart(2, '0');
+
+    }, 10);
+
+    this.intervalId = setInterval(() => {
+      seconds--;
+
+      this.timerElementSeconds.textContent = seconds;
+
+      if (seconds <= 0) {
+        clearInterval(this.intervalId);
+        clearInterval(this.microIntervalId);
+        this.fail();
+      }
+
+    }, 1000);
+  }
+
+
+
   registerEvents() {
     /*
       TODO:
@@ -25,6 +67,15 @@ class Game {
       При неправильном вводе символа - this.fail();
       DOM-элемент текущего символа находится в свойстве this.currentSymbol.
      */
+
+    document.addEventListener('keydown', event =>{
+      if(event.key === this.currentSymbol.textContent){
+          this.success();
+      }
+      else{
+          this.fail();
+      }
+    })
   }
 
   success() {
@@ -56,6 +107,7 @@ class Game {
     const word = this.getWord();
 
     this.renderWord(word);
+    this.timer(word);
   }
 
   getWord() {

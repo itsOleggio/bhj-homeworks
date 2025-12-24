@@ -89,3 +89,10 @@ body {
 .product-shadow {
   position: absolute;
 }
+
+.cart__product:hover {
+  opacity: 0.5;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+

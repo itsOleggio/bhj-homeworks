@@ -1,37 +1,40 @@
-let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-console.log('Загруженные задачи:', tasks);
-
 const input = document.getElementById('task__input');
-const btn_send = document.getElementById('tasks__add');
+const btnSend = document.getElementById('tasks__add');
 const list = document.getElementById('tasks__list');
 
 renderTask();
 
-btn_send.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const taskText = input.value.trim();
-
-    if(taskText.length === 0) {
+function addTask(taskText) {
+    if (taskText.length === 0) {
         let error__message = document.querySelector('.error-message');
 
-        if (!error__message){
+        if (!error__message) {
             error__message.textContent = 'Введите задачу';
             console.log(error__message)
             document.body.appendChild(error__message);
         }
     } else {
+        const tasks = getTask();
         tasks.push(taskText);
         localStorage.setItem('tasks', JSON.stringify(tasks));
-        input.value = '';
         renderTask();
+        input.value = '';
     }
-});
+}
+
+function getTask() {
+    const tasksJSON = localStorage.getItem('tasks');
+    console.log(tasksJSON);
+    return tasksJSON ? JSON.parse(tasksJSON) : [];
+}
+
 
 function renderTask() {
     list.innerHTML = '';
 
-    for(let i = 0; i < tasks.length; i++){
+    const tasks = getTask();
+
+    for (let i = 0; i < tasks.length; i++) {
         const task__title = document.createElement('div');
         task__title.classList.add('task');
         task__title.innerHTML = `
@@ -42,8 +45,16 @@ function renderTask() {
     }
 }
 
+btnSend.addEventListener('click', (e) => {
+    e.preventDefault();
+    const taskText = input.value.trim();
+    addTask(taskText);
+});
+
 list.addEventListener('click', (e) => {
     e.preventDefault();
+
+    const tasks = getTask();
 
     const removeBtn = e.target.closest('.task__remove');
     if (removeBtn) {

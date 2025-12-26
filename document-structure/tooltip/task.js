@@ -1,34 +1,33 @@
 const tooltips = document.querySelectorAll('.has-tooltip');
 
 tooltips.forEach(element => {
-    element.addEventListener('mouseover', (e) => {
+    element.addEventListener('click', (e) => {
         e.preventDefault();
 
-        let tooltip = element.querySelector('.tooltip_active');
+        const activeTooltip = document.querySelector('.tooltip_active');
 
-        if (!tooltip) {
-            tooltip = document.createElement('div');
-            tooltip.textContent = element.title;
-            tooltip.classList.add('tooltip');
-            tooltip.classList.add('tooltip_active');
-
-            document.body.appendChild(tooltip);
-
-            const coords = element.getBoundingClientRect();
-            const left = coords.left + (element.offsetWidth - tooltip.offsetWidth) / 2;
-            const top = coords.top - tooltip.offsetHeight + 50;
-
-            tooltip.style.top = top + 'px';
-            tooltip.style.left = left + 'px';
+        if (activeTooltip && activeTooltip.previousElementSibling === element) {
+            // console.log('Удаляем');
+            activeTooltip.remove();
+            return;
         }
-    })
-    element.addEventListener('mouseleave', (e) => {
-        e.preventDefault();
 
-        let tooltip = document.querySelector('.tooltip_active');
+        document.querySelectorAll('.tooltip_active').forEach(t => t.remove());
 
-        if (tooltip) {
-            tooltip.remove();
-        }
+        // console.log('Создаем');
+        const tooltip = document.createElement('div');
+        tooltip.textContent = element.title;
+        tooltip.classList.add('tooltip');
+        tooltip.classList.add('tooltip_active');
+
+        element.insertAdjacentElement('afterend', tooltip);
+
+        const coords = element.getBoundingClientRect();
+        const left = coords.left + (element.offsetWidth - tooltip.offsetWidth) / 2;
+        const top = coords.top - tooltip.offsetHeight;
+
+        tooltip.style.top = top + 'px';
+        tooltip.style.left = left + 'px';
+
     })
 })

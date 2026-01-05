@@ -1,19 +1,30 @@
 const pollTitle = document.getElementById('poll__title');
 const pollAnswers = document.querySelector('.poll__answers');
 
-function fetchData() {
+function fetchData(method, url, body = null, onSuccess) {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://students.netoservices.ru/nestjs-backend/poll');
+    xhr.open(method, url);
+
     xhr.onload = () => {
         try {
-            const response = JSON.parse(xhr.response);
-            displayInfo(response);
+            if (xhr.status >= 200 && xhr.status < 300) {
+                const response = JSON.parse(xhr.response);
+                onSuccess(response);
+            } else {
+                alert(`Ошибка ${xhr.status}`);
+            }
         } catch (e) {
             console.log('Ошибка:', e);
         }
+    };
+
+    if (method === 'POST') {
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     }
-    xhr.send();
+
+    xhr.send(body);
 }
+
 
 function displayInfo(response) {
     const title = response.data.title;
@@ -44,23 +55,6 @@ function displayInfo(response) {
     });
 }
 
-
-function getResult(vote, answer) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://students.netoservices.ru/nestjs-backend/poll');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.send(`vote=${vote}&answer=${answer}`);
-
-    xhr.onload = () => {
-        try {
-            const response = JSON.parse(xhr.response);
-            displayResult(response);
-        } catch (e) {
-            console.log('Ошибка:', e);
-        }
-    }
-}
-
 function displayResult(response) {
     pollAnswers.innerHTML = '';
     const sum = response.stat.reduce((acc, item) => acc + item.votes, 0);
@@ -76,6 +70,20 @@ function displayResult(response) {
     })
 }
 
+function getResult(vote, answer) {
+    fetchData(
+        'POST',
+        'https://students.netoservices.ru/nestjs-backend/poll',
+        `vote=${vote}&answer=${answer}`,
+        displayResult
+    );
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    fetchData();
+    fetchData(
+        'GET',
+        'https://students.netoservices.ru/nestjs-backend/poll',
+        null,
+        displayInfo
+    );
 });
